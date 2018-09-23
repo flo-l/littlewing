@@ -1,5 +1,5 @@
 use regex::Regex;
-use rustyline::Editor;
+//use rustyline::Editor;
 use time::precise_time_s;
 
 use std::io;
@@ -47,6 +47,7 @@ impl CLI {
     }
 
     pub fn run(&mut self) {
+        /*
         let mut rl = Editor::<()>::new();
 
         loop {
@@ -85,6 +86,7 @@ impl CLI {
                 Err(_) => { break }
             }
         }
+        */
     }
 
     fn cmd_usage(&self) {
