@@ -1,4 +1,4 @@
-use time::precise_time_s;
+use std::time::{Duration, Instant};
 
 use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
@@ -6,10 +6,10 @@ use std::sync::atomic::{AtomicBool, Ordering};
 #[derive(Clone)]
 pub struct Clock {
     pub polling_nodes_count: u64,
-    pub started_at: u64,
+    pub started_at: Instant,
     moves_level: u16,
     moves_remaining: u16,
-    time_remaining: u64,
+    time_remaining: Duration,
     last_nodes_count: u64,
     is_finished: Arc<AtomicBool>,
     is_level: bool // TODO: find a better name
@@ -19,10 +19,10 @@ impl Clock {
     pub fn new(moves: u16, time: u64) -> Clock {
         Clock {
             polling_nodes_count: 100,
-            started_at: 0,
+            started_at: Instant::now(),
             moves_level: moves,
             moves_remaining: moves,
-            time_remaining: time,
+            time_remaining: Duration::from_secs(time),
             last_nodes_count: 0,
             is_finished: Arc::new(AtomicBool::new(false)),
             is_level: true
@@ -32,7 +32,7 @@ impl Clock {
     pub fn start(&mut self, ply: usize) {
         self.is_finished.store(false, Ordering::Relaxed);
         self.last_nodes_count = 0;
-        self.started_at = (precise_time_s() * 1000.0) as u64;
+        self.started_at = Instant::now();
 
         // The UCI protocol gives the number of remaining moves before each
         // search but XBoard doesn't so we need to calculate it based on moves
@@ -53,17 +53,15 @@ impl Clock {
     }
 
     pub fn set_time(&mut self, time: u64) {
-        self.time_remaining = time;
+        self.time_remaining = Duration::from_secs(time);
     }
 
-    pub fn allocated_time(&self) -> u64 {
-        self.time_remaining / self.moves_remaining as u64
+    pub fn allocated_time(&self) -> Duration {
+        self.time_remaining.checked_div(self.moves_remaining.into()).expect("tried to divide by 0")
     }
 
-    pub fn elapsed_time(&self) -> u64 {
-        let now = (precise_time_s() * 1000.0) as u64;
-
-        now - self.started_at
+    pub fn elapsed_time(&self) -> Duration {
+        self.started_at.elapsed()
     }
 
     pub fn poll(&mut self, nodes_count: u64) -> bool {
@@ -78,7 +76,7 @@ impl Clock {
             let time_to_play = 25;
             let delta = time_between_polls + time_to_play;
 
-            if delta + self.elapsed_time() > self.allocated_time() {
+            if Duration::from_millis(delta) + self.elapsed_time() > self.allocated_time() {
                 self.is_finished.store(true, Ordering::Relaxed);
             }
         }

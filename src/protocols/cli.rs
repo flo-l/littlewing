@@ -1,6 +1,6 @@
 use regex::Regex;
 //use rustyline::Editor;
-use time::precise_time_s;
+use std::time::Instant;
 
 use std::io;
 use std::fs::File;
@@ -532,12 +532,12 @@ impl CLI {
         self.game.moves.skip_killers = true;
 
         loop {
-            let started_at = precise_time_s();
+            let started_at = Instant::now();
             let n = self.game.perft(depth);
-            let ended_at = precise_time_s();
-            let s = ended_at - started_at;
-            let nps = (n as f64) / s;
-            println!("perft {} -> {} ({:.2} s, {:.2e} nps)", depth, n, s, nps);
+            let s = started_at.elapsed();
+            let s_float: f64 = (s.as_secs() as f64) + (1f64 / s.subsec_nanos() as f64);
+            let nps = (n as f64) / s_float;
+            println!("perft {} -> {} ({:.2} s, {:.2e} nps)", depth, n, s_float, nps);
 
             if args.len() == 2 {
                 break;
