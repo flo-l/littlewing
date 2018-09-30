@@ -26,7 +26,6 @@ lazy_static = "1.0"
 rand = "0.5"
 regex = "1.0"
 #rustyline = "2.0"
-js-sys = "0.2.7"
 wasm-bindgen = "0.2"
 
 [target.'cfg(not(target_arch="wasm32"))'.dependencies]
