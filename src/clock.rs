@@ -22,7 +22,7 @@ impl Clock {
             started_at: Instant::now(),
             moves_level: moves,
             moves_remaining: moves,
-            time_remaining: Duration::from_millis(time),
+            time_remaining: Duration::from_secs(time),
             last_nodes_count: 0,
             is_finished: Arc::new(AtomicBool::new(false)),
             is_level: true
@@ -53,7 +53,7 @@ impl Clock {
     }
 
     pub fn set_time(&mut self, time: u64) {
-        self.time_remaining = Duration::from_millis(time);
+        self.time_remaining = Duration::from_secs(time);
     }
 
     pub fn allocated_time(&self) -> Duration {
