@@ -70,6 +70,10 @@ impl PieceMove {
     pub fn to_can(self) -> String {
         self.to_string()
     }
+
+    pub fn to_coordinate_notation(&self) -> String {
+        format!("{}{}", self.from().to_coord(), self.to().to_coord())
+    }
 }
 
 impl fmt::Display for PieceMove {
