@@ -39,10 +39,10 @@ extern crate rand;
 extern crate regex;
 //extern crate rustyline;
 
-#[cfg(not(target="wasm"))]
+#[cfg(not(target_arch="wasm32"))]
 extern crate time;
 
-#[cfg(target="wasm")]
+#[cfg(target_arch="wasm32")]
 extern crate js_sys;
 
 mod attack;

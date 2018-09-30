@@ -29,10 +29,10 @@ regex = "1.0"
 js-sys = "0.2.7"
 wasm-bindgen = "0.2"
 
-[target.'cfg(not(target="wasm"))'.dependencies]
+[target.'cfg(not(target_arch="wasm32"))'.dependencies]
 time = "0.1"
 
-[target.'cfg(target="wasm")'.dependencies]
+[target.'cfg(target_arch="wasm32")'.dependencies]
 js-sys = "0.3.0"
 
 [badges]
