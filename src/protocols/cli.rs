@@ -1,6 +1,6 @@
 use regex::Regex;
 //use rustyline::Editor;
-use time::precise_time_s;
+use time_::precise_time_s;
 
 use std::io;
 use std::fs::File;

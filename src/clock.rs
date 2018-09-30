@@ -1,4 +1,4 @@
-use time::precise_time_s;
+use time_::precise_time_s;
 
 use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};

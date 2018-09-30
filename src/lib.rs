@@ -38,7 +38,12 @@ extern crate lazy_static;
 extern crate rand;
 extern crate regex;
 //extern crate rustyline;
+
+#[cfg(not(target="wasm"))]
 extern crate time;
+
+#[cfg(target="wasm")]
+extern crate js_sys;
 
 mod attack;
 mod common;
@@ -51,6 +56,7 @@ mod piece_square_table;
 mod transposition;
 mod transposition_table;
 mod zobrist;
+mod time_;
 
 /// Bitboard type
 pub mod bitboard;
