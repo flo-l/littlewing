@@ -212,13 +212,12 @@ impl Search for Game {
         if self.is_debug {
             let n = self.nodes_count;
             let t = self.clock.elapsed_time();
-            let t_secs: f64 = (t.as_secs() as f64) + 1f64 / (t.subsec_nanos() as f64);
-            let nps = (n as f64) / t_secs;
+            let nps = (n as f64) / ((t as f64) / 1000.0);
             if self.is_search_verbose {
                 println!();
             }
             println!("# {:15} {:>8}", "score:", best_score);
-            println!("# {:15} {:>8.9?}", "time: ", t);
+            println!("# {:15} {:>8} ms", "time:", t);
             println!("# {:15} {:>8} ({:.2e} nps)", "nodes:", n, nps);
             self.tt.print_stats();
         }
@@ -544,7 +543,7 @@ impl Search for Game {
 impl SearchExt for Game {
     fn print_debug_init(&self, depth: Depth) {
         println!("# FEN {}", self.to_fen());
-        println!("# allocating {:.9?} to move", self.clock.allocated_time());
+        println!("# allocating {} ms to move", self.clock.allocated_time());
         println!("# starting search at depth {}", depth);
         println!();
     }
@@ -564,15 +563,14 @@ impl SearchExt for Game {
 
         match self.protocol {
             Protocol::UCI => {
-                println!("info depth {} score cp {} time {:.9?} nodes {} pv {}", depth, score, time, nodes, pv);
+                println!("info depth {} score cp {} time {} nodes {} pv {}", depth, score, time, nodes, pv);
             },
             Protocol::XBoard | Protocol::CLI => {
                 if self.side() == BLACK {
                     let fm = self.positions.fullmoves();
                     pv = format!("{}. ... {}", fm, pv);
                 }
-                let time_f = (time.as_secs() as f64) + 1f64 / (time.subsec_nanos() as f64);
-                println!("  {:>3}  {:>5}  {:>6}  {:>9}  {}", depth, score, time_f / 10f64, nodes, pv);
+                println!("  {:>3}  {:>5}  {:>6}  {:>9}  {}", depth, score, time / 10, nodes, pv);
             }
         }
 
